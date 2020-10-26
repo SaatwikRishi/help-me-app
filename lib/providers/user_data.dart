@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:helpmeapp/providers/demo_login.dart';
 
 class Contacts {
   final String avatar;
@@ -12,15 +12,18 @@ class Contacts {
 }
 
 class Uinfo {
-  bool isloggedin;
   String name;
+  String email;
+  List<dynamic> friends;
   String phone;
   String address;
-  Uinfo(
-      {this.name = "YASH TRIPATHI",
-      this.address,
-      this.phone,
-      this.isloggedin = false});
+  Uinfo({
+    this.email,
+    this.name,
+    this.address,
+    this.friends,
+    this.phone,
+  });
 }
 
 class MyUser extends ChangeNotifier {
@@ -28,9 +31,14 @@ class MyUser extends ChangeNotifier {
     return [..._contacts];
   }
 
-  Uinfo _info = Uinfo();
-  Uinfo get getinfo {
-    return _info;
+  bool _pending = false;
+  Uinfo _info;
+  Future<Uinfo> getinfo({bool refresh = false}) {
+    if (_info == null) {
+      return retrievemyinfo().then((value) => _info);
+    }
+
+    return Future.delayed(Duration(microseconds: 0)).then((value) => _info);
   }
 
   List<Contacts> _contacts = [
@@ -96,11 +104,22 @@ class MyUser extends ChangeNotifier {
         phone: '+91 984321987435'),
   ];
 
-  Future<int> login(String id, String password) {
-    return FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: id, password: password)
-        .then((value) => 1)
-        .catchError((e) => 0);
+  Future<Uinfo> retrievemyinfo() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      final Map<dynamic, dynamic> _data = value.data();
+      _info = Uinfo(
+          name: _data['name'],
+          address: null,
+          email: _data['email'],
+          friends: _data['friends'],
+          phone: null);
+
+      return _info;
+    }).catchError((e) => throw e);
   }
 
   void logout() {

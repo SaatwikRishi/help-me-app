@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:helpmeapp/providers/demo_login.dart';
+
 import 'package:helpmeapp/screens/addfriend.dart';
 import 'package:helpmeapp/screens/logs.dart';
 import 'package:helpmeapp/screens/viewfriend.dart';
@@ -13,32 +13,41 @@ class HomeDrawer extends StatelessWidget {
   final isloggedin = FirebaseAuth.instance.currentUser == null ? false : true;
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<MyUser>(context).getinfo;
     return Drawer(
       elevation: 5,
       child: ListView(
         children: [
-          AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            color: Colors.blue,
-            height: isloggedin ? MediaQuery.of(context).size.height * 0.3 : 0,
-            child: Card(
-              child: isloggedin
-                  ? null
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _user.name,
-                            style: TextStyle(fontSize: 40),
-                          ),
-                        ),
-                        Expanded(child: Text(DemoLogin.email)),
-                      ],
-                    ),
-            ),
-          ),
+          Container(
+              color: Colors.blue,
+              height: isloggedin ? MediaQuery.of(context).size.height * 0.3 : 0,
+              child: Card(
+                  child: !isloggedin
+                      ? null
+                      : FutureBuilder(
+                          future: Provider.of<MyUser>(context, listen: false)
+                              .getinfo(),
+                          builder: (context, snap) {
+                            final Uinfo _user = snap.data;
+                            if (snap.hasError)
+                              return Center(
+                                child: Text("AN ERROR OCCOURED"),
+                              );
+                            if (snap.hasData)
+                              return Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _user.name,
+                                      style: TextStyle(fontSize: 40),
+                                    ),
+                                  ),
+                                  Expanded(child: Text(_user.email)),
+                                ],
+                              );
+                            return Center(child: CircularProgressIndicator());
+                          }))),
           Divider(),
           ListTile(
               leading: Icon(Icons.people),

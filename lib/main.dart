@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:helpmeapp/providers/logs_provider.dart';
@@ -6,6 +7,9 @@ import 'package:helpmeapp/screens/homescreen.dart';
 
 import 'package:helpmeapp/screens/viewfriend.dart';
 import 'package:provider/provider.dart';
+
+import 'screens/homescreen.dart';
+import 'screens/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +38,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<LogsProvider>(context, listen: false).retrievelog();
-    return Scaffold(
-      body: HomeScreen(),
-    );
+    return StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (ctx, snap) => snap.hasData ? HomeScreen() : AuthScreen());
   }
 }

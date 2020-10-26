@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:helpmeapp/providers/logs_provider.dart';
@@ -10,17 +11,17 @@ class LogsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _logs = Provider.of<LogsProvider>(context).getlog;
+    final bool isloggedIn =
+        FirebaseAuth.instance.currentUser == null ? false : true;
     return Scaffold(
         appBar: AppBar(
           title: Text("LOGS"),
         ),
-        body: Provider.of<MyUser>(context, listen: false).getinfo.isloggedin
+        body: isloggedIn
             ? Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: !Provider.of<MyUser>(context, listen: false)
-                        .getinfo
-                        .isloggedin
+                child: !isloggedIn
                     ? null
                     : Column(
                         children: [

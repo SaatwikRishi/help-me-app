@@ -1,9 +1,13 @@
 //import 'package:firebase_auth/';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:helpmeapp/widgets/appdrawer.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/user_data.dart';
 
 class AuthScreen extends StatelessWidget {
   @override
@@ -25,11 +29,12 @@ class _FormScreenState extends State<FormScreen> {
   bool _loading = false;
 
   void _saveForm() async {
-    int c;
     if (_isLogin) {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: _controller1.text, password: _controller.text)
+          .then(
+              (value) => Provider.of<MyUser>(context, listen: false).getinfo())
           .then((value) => Navigator.of(context).popAndPushNamed('/'))
           .catchError((onError) => Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(onError.toString()))));
@@ -37,8 +42,17 @@ class _FormScreenState extends State<FormScreen> {
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: _controller1.text, password: _controller.text)
-          .then((value) => Navigator.of(context).popAndPushNamed('/'))
-          .catchError((onError) => Scaffold.of(context).showSnackBar(
+          .then((b) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          'uid': b.user.uid,
+          'name': _info['username'],
+          'email': _controller1.text,
+          'friends': []
+        }).then((value) => Navigator.of(context).popAndPushNamed('/'));
+      }).catchError((onError) => Scaffold.of(context).showSnackBar(
               SnackBar(content: const Text("There was an error"))));
     }
   }
@@ -91,7 +105,7 @@ class _FormScreenState extends State<FormScreen> {
                         children: <Widget>[
                           TextFormField(
                             controller: _controller1,
-                            onSaved: (val) {
+                            onChanged: (val) {
                               _info['email'] = val.trim();
                             },
                             keyboardType: TextInputType.emailAddress,
@@ -108,7 +122,7 @@ class _FormScreenState extends State<FormScreen> {
                           if (!_isLogin)
                             Container(
                               child: TextFormField(
-                                onSaved: (val) {
+                                onChanged: (val) {
                                   _info['username'] = val.trim();
                                 },
                                 validator: (val) {
@@ -123,7 +137,7 @@ class _FormScreenState extends State<FormScreen> {
                             ),
                           TextFormField(
                             controller: _controller,
-                            onSaved: (val) {
+                            onChanged: (val) {
                               _info['password'] = val.trim();
                             },
                             validator: (val) {
