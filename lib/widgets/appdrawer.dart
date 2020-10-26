@@ -71,7 +71,7 @@ class HomeDrawer extends StatelessWidget {
           Divider(),
           ListTile(
               leading: Icon(Icons.local_parking),
-              title: _user.isloggedin ? Text('Logout') : const Text("Login"),
+              title: isloggedin ? Text('Logout') : const Text("Login"),
               onTap: () {
                 if (isloggedin) {
                   Provider.of<MyUser>(context, listen: false).logout();
