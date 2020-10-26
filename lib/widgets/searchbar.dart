@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:helpmeapp/providers/friends_provider.dart';
+import 'package:provider/provider.dart';
 
 class SearchBar extends StatefulWidget {
+  final Function callback;
+  final TextEditingController _controller;
+  SearchBar(this.callback, this._controller);
   @override
   _SearchBarState createState() => _SearchBarState();
 }
@@ -17,7 +22,6 @@ class _SearchBarState extends State<SearchBar> {
   }
 
   void _onfocusChange() {
-    print("HAS FOCUS == ${_focusNode.hasFocus}");
     setState(() {
       _focusNode.hasFocus ? _issearch = true : _issearch = false;
     });
@@ -37,7 +41,10 @@ class _SearchBarState extends State<SearchBar> {
               ? EdgeInsets.only(top: 28, left: 10, right: 10)
               : EdgeInsets.all(28),
           child: TextFormField(
-            onFieldSubmitted: (value) {},
+            controller: widget._controller,
+            onFieldSubmitted: (value) {
+              widget.callback(value, context);
+            },
             focusNode: _focusNode,
             decoration: InputDecoration(
                 icon: _issearch

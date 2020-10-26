@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:helpmeapp/providers/friends_provider.dart';
 import 'package:helpmeapp/providers/logs_provider.dart';
 import 'package:helpmeapp/providers/user_data.dart';
 import 'package:helpmeapp/screens/homescreen.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: MyUser()),
         ChangeNotifierProvider.value(value: LogsProvider()),
+        ChangeNotifierProvider.value(value: FriendsProvider()),
       ],
       child: MaterialApp(
         title: 'Help Me App',
