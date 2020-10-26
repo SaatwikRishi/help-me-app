@@ -6,7 +6,6 @@ import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/logs_provider.dart';
-import '../providers/logs_provider.dart';
 
 class StreamButton extends StatefulWidget {
   bool isactive = false;
@@ -75,16 +74,15 @@ class _StreamButtonState extends State<StreamButton> {
                           widget.currentlocation.longitude);
                       num distance =
                           geodesy.distanceBetweenTwoGeoPoints(p1, p2);
+                      print(distance);
 
-                      if (distance >= 20) {
+                      if (distance >= 10) {
                         widget.currentlocation = _templocation;
                         FirebaseFirestore.instance
                             .collection('users')
                             .doc(FirebaseAuth.instance.currentUser.uid)
                             .set({
                           'isactive': true,
-                          'longitude': widget.currentlocation.longitude,
-                          'latitude': widget.currentlocation.latitude
                         }, SetOptions(merge: true));
                       }
                     }

@@ -12,7 +12,6 @@ class _SearchBarState extends State<SearchBar> {
   bool _issearch = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _focusNode.addListener(_onfocusChange);
   }
@@ -38,6 +37,7 @@ class _SearchBarState extends State<SearchBar> {
               ? EdgeInsets.only(top: 28, left: 10, right: 10)
               : EdgeInsets.all(28),
           child: TextFormField(
+            onFieldSubmitted: (value) {},
             focusNode: _focusNode,
             decoration: InputDecoration(
                 icon: _issearch
