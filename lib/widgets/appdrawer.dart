@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:helpmeapp/providers/demo_login.dart';
 import 'package:helpmeapp/screens/addfriend.dart';
@@ -9,9 +10,10 @@ import 'package:provider/provider.dart';
 import '../providers/user_data.dart';
 
 class HomeDrawer extends StatelessWidget {
+  final isloggedin = FirebaseAuth.instance.currentUser == null ? false : true;
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<User>(context).getinfo;
+    final _user = Provider.of<MyUser>(context).getinfo;
     return Drawer(
       elevation: 5,
       child: ListView(
@@ -19,10 +21,9 @@ class HomeDrawer extends StatelessWidget {
           AnimatedContainer(
             duration: Duration(milliseconds: 300),
             color: Colors.blue,
-            height:
-                _user.isloggedin ? MediaQuery.of(context).size.height * 0.3 : 0,
+            height: isloggedin ? MediaQuery.of(context).size.height * 0.3 : 0,
             child: Card(
-              child: !_user.isloggedin
+              child: isloggedin
                   ? null
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -72,8 +73,8 @@ class HomeDrawer extends StatelessWidget {
               leading: Icon(Icons.local_parking),
               title: _user.isloggedin ? Text('Logout') : const Text("Login"),
               onTap: () {
-                if (_user.isloggedin) {
-                  Provider.of<User>(context, listen: false).logout();
+                if (isloggedin) {
+                  Provider.of<MyUser>(context, listen: false).logout();
                 } else
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AuthScreen()));

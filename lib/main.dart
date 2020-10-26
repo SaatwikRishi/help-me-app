@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:helpmeapp/providers/logs_provider.dart';
 import 'package:helpmeapp/providers/user_data.dart';
@@ -6,8 +7,9 @@ import 'package:helpmeapp/screens/homescreen.dart';
 import 'package:helpmeapp/screens/viewfriend.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp().then((value) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: User()),
+        ChangeNotifierProvider.value(value: MyUser()),
         ChangeNotifierProvider.value(value: LogsProvider()),
       ],
       child: MaterialApp(

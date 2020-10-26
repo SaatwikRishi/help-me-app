@@ -8,7 +8,7 @@ import '../providers/user_data.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<User>(context).getinfo;
+    final _user = Provider.of<MyUser>(context).getinfo;
 
     return Scaffold(
       appBar: AppBar(

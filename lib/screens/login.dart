@@ -1,12 +1,9 @@
-import 'dart:io';
 //import 'package:firebase_auth/';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:helpmeapp/widgets/appdrawer.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/user_data.dart';
 
 class AuthScreen extends StatelessWidget {
   @override
@@ -28,14 +25,21 @@ class _FormScreenState extends State<FormScreen> {
   bool _loading = false;
 
   void _saveForm() async {
-    int c = Provider.of<User>(context, listen: false)
-        .login(_controller1.text, _controller.text);
-
-    if (c == 0) {
-      Scaffold.of(context)
-          .showSnackBar(SnackBar(content: const Text("There was an error")));
+    int c;
+    if (_isLogin) {
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _controller1.text, password: _controller.text)
+          .then((value) => Navigator.of(context).popAndPushNamed('/'))
+          .catchError((onError) => Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(onError.toString()))));
     } else {
-      Navigator.of(context).popAndPushNamed('/');
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _controller1.text, password: _controller.text)
+          .then((value) => Navigator.of(context).popAndPushNamed('/'))
+          .catchError((onError) => Scaffold.of(context).showSnackBar(
+              SnackBar(content: const Text("There was an error"))));
     }
   }
 
@@ -85,10 +89,6 @@ class _FormScreenState extends State<FormScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          // Image(
-                          //   image: AssetImage('/assets/images/logo.png'),
-                          //   fit: BoxFit.cover,
-                          // ),
                           TextFormField(
                             controller: _controller1,
                             onSaved: (val) {
@@ -138,8 +138,9 @@ class _FormScreenState extends State<FormScreen> {
                           if (!_isLogin)
                             Container(
                               child: TextFormField(
-                                autovalidate: true,
                                 validator: (val) {
+                                  print(val);
+                                  print(_controller.text);
                                   if (val != _controller.text) {
                                     return 'Password doesn\'t match';
                                   }

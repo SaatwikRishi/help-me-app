@@ -14,11 +14,11 @@ class LogsScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text("LOGS"),
         ),
-        body: Provider.of<User>(context, listen: false).getinfo.isloggedin
+        body: Provider.of<MyUser>(context, listen: false).getinfo.isloggedin
             ? Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: !Provider.of<User>(context, listen: false)
+                child: !Provider.of<MyUser>(context, listen: false)
                         .getinfo
                         .isloggedin
                     ? null

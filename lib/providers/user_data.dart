@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:helpmeapp/providers/demo_login.dart';
 
@@ -22,7 +23,7 @@ class Uinfo {
       this.isloggedin = false});
 }
 
-class User extends ChangeNotifier {
+class MyUser extends ChangeNotifier {
   List<Contacts> get contacts {
     return [..._contacts];
   }
@@ -95,18 +96,15 @@ class User extends ChangeNotifier {
         phone: '+91 984321987435'),
   ];
 
-  int login(String id, String password) {
-    if (id == DemoLogin.email && password == DemoLogin.password) {
-      _info.isloggedin = true;
-      notifyListeners();
-      return 1;
-    } else {
-      return 0;
-    }
+  Future<int> login(String id, String password) {
+    return FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: id, password: password)
+        .then((value) => 1)
+        .catchError((e) => 0);
   }
 
   void logout() {
-    _info.isloggedin = false;
+    FirebaseAuth.instance.signOut();
     notifyListeners();
   }
 }

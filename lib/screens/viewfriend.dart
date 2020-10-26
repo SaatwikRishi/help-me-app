@@ -9,7 +9,8 @@ class ViewFriend extends StatelessWidget {
   static const routeName = '/viewfriend';
   @override
   Widget build(BuildContext context) {
-    List<Contacts> _users = Provider.of<User>(context, listen: false).contacts;
+    List<Contacts> _users =
+        Provider.of<MyUser>(context, listen: false).contacts;
     _users.forEach((element) {
       print(element.id);
     });
