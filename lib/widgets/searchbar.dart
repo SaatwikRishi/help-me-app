@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:helpmeapp/providers/friends_provider.dart';
-import 'package:provider/provider.dart';
 
 class SearchBar extends StatefulWidget {
   final Function callback;
@@ -13,7 +11,6 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar> {
   FocusNode _focusNode = new FocusNode();
 
-  TextEditingController _controller;
   bool _issearch = false;
   @override
   void initState() {

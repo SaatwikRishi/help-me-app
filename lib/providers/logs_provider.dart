@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Log {
-  final LocationData location;
+  final LatLng location;
 
   final DateTime time;
   Log({this.location, this.time});
 }
 
 class LogsProvider with ChangeNotifier {
-  LocationData _location;
-  bool _isactive = false;
   List<Log> _logs = [];
   List<Log> get getlog {
     return [..._logs];
@@ -40,21 +40,30 @@ class LogsProvider with ChangeNotifier {
     setlog();
   }
 
-  Future<void> retrievelog() async {
-    final _prefs = SharedPreferences.getInstance();
-    return _prefs.then((value) {
-      List<dynamic> _temp = [];
-      String _l = value.getString("logs");
-
-      _temp = jsonDecode(_l);
+  Future<List<Log>> retrievelog({bool refresh = true}) async {
+    if (refresh || _logs.length == 0) {
       _logs = [];
-      _temp.forEach((element) {
-        _logs.add(Log(
-            location: LocationData.fromMap(
-                {'longitude': element['long'], 'latitude': element['lat']}),
-            time: DateTime.parse(element['time'])));
+      return FirebaseFirestore.instance
+          .collection('logs')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .get()
+          .then((value) {
+        final Map<dynamic, dynamic> _val = value.data();
+
+        _val['log'].forEach((value) {
+          _logs.add(Log(
+              time: DateTime.parse(value['start_time']),
+              location: LatLng(value['start_location']['lat'],
+                  value['end_location']['long'])));
+        });
+
+        _logs.forEach((element) {
+          print(element.location);
+        });
+        return _logs;
       });
-    });
+    }
+    return _logs;
   }
 
   Future<int> insertlog(DateTime activationtime, DateTime stoptime,

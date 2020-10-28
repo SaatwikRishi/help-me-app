@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:helpmeapp/screens/addfriend.dart';
 import 'package:helpmeapp/screens/logs.dart';
+import 'package:helpmeapp/screens/mapstream.dart';
 import 'package:helpmeapp/screens/viewfriend.dart';
 import 'package:helpmeapp/screens/login.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,12 @@ class HomeDrawer extends StatelessWidget {
               title: Text('View Friends and Family'),
               onTap: () {
                 Navigator.of(context).pushNamed(ViewFriend.routeName);
+              }),
+          ListTile(
+              leading: Icon(Icons.map),
+              title: Text('Map Stream'),
+              onTap: () {
+                //  Navigator.of(context).pushNamed(MapStream.routename);
               }),
           Divider(),
           ListTile(

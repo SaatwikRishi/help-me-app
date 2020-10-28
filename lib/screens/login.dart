@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:helpmeapp/widgets/appdrawer.dart';
@@ -35,6 +36,15 @@ class _FormScreenState extends State<FormScreen> {
               email: _controller1.text, password: _controller.text)
           .then(
               (value) => Provider.of<MyUser>(context, listen: false).getinfo())
+          .then((f) {
+            final _fbm = FirebaseMessaging();
+            _fbm.getToken().then((value) {
+              return FirebaseFirestore.instance
+                  .collection('tokens')
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .set({'token': value}, SetOptions(merge: true));
+            });
+          })
           .then((value) => Navigator.of(context).popAndPushNamed('/'))
           .catchError((onError) => Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(onError.toString()))));

@@ -6,7 +6,7 @@ import 'package:helpmeapp/widgets/locallist.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_data.dart';
-import '../providers/user_data.dart';
+
 import '../widgets/locallist.dart';
 
 class ViewFriend extends StatelessWidget {

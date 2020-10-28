@@ -1,14 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:helpmeapp/screens/mapstream.dart';
 
 import 'package:helpmeapp/widgets/appdrawer.dart';
 import 'package:helpmeapp/widgets/streambutton.dart';
-import 'package:provider/provider.dart';
 
-import '../providers/user_data.dart';
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-class HomeScreen extends StatelessWidget {
+class _HomeScreenState extends State<HomeScreen> {
+  bool transfer = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

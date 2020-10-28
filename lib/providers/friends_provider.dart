@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Contacts {
   final String avatar;
@@ -56,7 +55,7 @@ class FriendsProvider with ChangeNotifier {
           .then((value) {
         value.docs.forEach((element) {
           final _ele = element.data();
-          print(_ele);
+
           _contacts.add(Contacts(
               id: _ele['uid'], name: _ele['name'], email: _ele['email']));
         });

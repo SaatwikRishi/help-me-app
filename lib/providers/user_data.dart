@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:helpmeapp/providers/friends_provider.dart';
 
 class Uinfo {
   String name;
@@ -19,7 +18,6 @@ class Uinfo {
 }
 
 class MyUser extends ChangeNotifier {
-  bool _pending = false;
   Uinfo _info;
   Uinfo get info {
     return _info;
