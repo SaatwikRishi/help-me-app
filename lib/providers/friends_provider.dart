@@ -22,7 +22,7 @@ class FriendsProvider with ChangeNotifier {
   static Future<List<Contacts>> databasesearch(String name) {
     return FirebaseFirestore.instance
         .collection('users')
-        .where('name', isLessThanOrEqualTo: name)
+        .where('name', isLessThanOrEqualTo: name.toUpperCase())
         .get()
         .then((value) {
       List<Contacts> _searchContacts = [];

@@ -103,6 +103,8 @@ class _StreamButtonState extends State<StreamButton>
                             .collection('users')
                             .doc(FirebaseAuth.instance.currentUser.uid)
                             .set({
+                          'longitude': StreamLogData.currentlocation.longitude,
+                          'latitude': StreamLogData.currentlocation.latitude,
                           'isactive': true,
                         }, SetOptions(merge: true));
                       }

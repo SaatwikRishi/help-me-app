@@ -39,10 +39,10 @@ class _FormScreenState extends State<FormScreen> {
           .then((f) {
             final _fbm = FirebaseMessaging();
             _fbm.getToken().then((value) {
-              return FirebaseFirestore.instance
-                  .collection('tokens')
-                  .doc(FirebaseAuth.instance.currentUser.uid)
-                  .set({'token': value}, SetOptions(merge: true));
+              return FirebaseFirestore.instance.collection('tokens').doc().set({
+                'uid': FirebaseAuth.instance.currentUser.uid,
+                'token': value
+              }, SetOptions(merge: true));
             });
           })
           .then((value) => Navigator.of(context).popAndPushNamed('/'))
@@ -58,7 +58,7 @@ class _FormScreenState extends State<FormScreen> {
             .doc(FirebaseAuth.instance.currentUser.uid)
             .set({
           'uid': b.user.uid,
-          'name': _info['username'],
+          'name': _info['username'].toUpperCase(),
           'email': _controller1.text,
           'friends': []
         }).then((value) => Navigator.of(context).popAndPushNamed('/'));

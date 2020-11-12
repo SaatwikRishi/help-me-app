@@ -64,12 +64,6 @@ class HomeDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pushNamed(ViewFriend.routeName);
               }),
-          ListTile(
-              leading: Icon(Icons.map),
-              title: Text('Map Stream'),
-              onTap: () {
-                //  Navigator.of(context).pushNamed(MapStream.routename);
-              }),
           Divider(),
           ListTile(
             onTap: () {
@@ -78,11 +72,6 @@ class HomeDrawer extends StatelessWidget {
             },
             leading: Icon(Icons.description),
             title: Text('View Logs'),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Change Settings'),
           ),
           Divider(),
           ListTile(
