@@ -1,9 +1,14 @@
-import 'dart:io';
 //import 'package:firebase_auth/';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:helpmeapp/widgets/appdrawer.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/user_data.dart';
 
 class AuthScreen extends StatelessWidget {
   @override
@@ -22,18 +27,48 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
-  File _image;
-
   bool _loading = false;
-  // final _auth = FirebaseAuth.instance;
 
-  void _saveForm() async {}
-
-  void _selectimg(File img) {
-    _image = img;
+  void _saveForm() async {
+    if (_isLogin) {
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _controller1.text, password: _controller.text)
+          .then(
+              (value) => Provider.of<MyUser>(context, listen: false).getinfo())
+          .then((f) {
+            final _fbm = FirebaseMessaging();
+            _fbm.getToken().then((value) {
+              return FirebaseFirestore.instance.collection('tokens').doc().set({
+                'uid': FirebaseAuth.instance.currentUser.uid,
+                'token': value
+              }, SetOptions(merge: true));
+            });
+          })
+          .then((value) => Navigator.of(context).popAndPushNamed('/'))
+          .catchError((onError) => Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(onError.toString()))));
+    } else {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _controller1.text, password: _controller.text)
+          .then((b) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          'uid': b.user.uid,
+          'name': _info['username'].toUpperCase(),
+          'email': _controller1.text,
+          'friends': []
+        }).then((value) => Navigator.of(context).popAndPushNamed('/'));
+      }).catchError((onError) => Scaffold.of(context).showSnackBar(
+              SnackBar(content: const Text("There was an error"))));
+    }
   }
 
   final _controller = TextEditingController();
+  final _controller1 = TextEditingController();
   final _key = GlobalKey<FormState>();
   Map<String, String> _info = {'email': '', 'password': '', 'username': ''};
 
@@ -78,12 +113,9 @@ class _FormScreenState extends State<FormScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Image(
-                            image: AssetImage('/assets/images/logo.jpeg'),
-                            fit: BoxFit.cover,
-                          ),
                           TextFormField(
-                            onSaved: (val) {
+                            controller: _controller1,
+                            onChanged: (val) {
                               _info['email'] = val.trim();
                             },
                             keyboardType: TextInputType.emailAddress,
@@ -100,7 +132,7 @@ class _FormScreenState extends State<FormScreen> {
                           if (!_isLogin)
                             Container(
                               child: TextFormField(
-                                onSaved: (val) {
+                                onChanged: (val) {
                                   _info['username'] = val.trim();
                                 },
                                 validator: (val) {
@@ -115,7 +147,7 @@ class _FormScreenState extends State<FormScreen> {
                             ),
                           TextFormField(
                             controller: _controller,
-                            onSaved: (val) {
+                            onChanged: (val) {
                               _info['password'] = val.trim();
                             },
                             validator: (val) {
@@ -130,8 +162,9 @@ class _FormScreenState extends State<FormScreen> {
                           if (!_isLogin)
                             Container(
                               child: TextFormField(
-                                autovalidate: true,
                                 validator: (val) {
+                                  print(val);
+                                  print(_controller.text);
                                   if (val != _controller.text) {
                                     return 'Password doesn\'t match';
                                   }
@@ -149,7 +182,7 @@ class _FormScreenState extends State<FormScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             onPressed: _saveForm,
-                            child: Text(_isLogin ? 'Login' : 'Signup'),
+                            child: Text(_isLogin ? 'Login' : 'Sign up'),
                           ),
                           FlatButton(
                             onPressed: () {

@@ -1,44 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
-class Contacts {
-  final String avatar;
-  final String id;
-  final String name;
-  final String type;
-  final String phone;
-  Contacts({this.id, this.avatar, this.name, this.type, this.phone});
-}
-
-class User extends ChangeNotifier {
+class Uinfo {
   String name;
+  String email;
+  List<dynamic> friends;
   String phone;
   String address;
+  Uinfo({
+    this.email,
+    this.name,
+    this.address,
+    this.friends,
+    this.phone,
+  });
+}
 
-  List<Contacts> get contacts {
-    return [..._contacts];
+class MyUser extends ChangeNotifier {
+  Uinfo _info;
+  Uinfo get info {
+    return _info;
   }
 
-  User _info;
-  List<Contacts> _contacts = [
-    Contacts(
-        id: '1',
-        avatar: null,
-        name: 'BokChoda',
-        type: 'friend',
-        phone: '+9199999333'),
-    Contacts(
-        id: '2',
-        avatar: null,
-        name: 'Non A BOKA',
-        type: 'friend',
-        phone: '+99'),
-    Contacts(id: '3', avatar: null, name: 'Polizz', type: 'auth', phone: '100'),
-    Contacts(id: '4', avatar: null, name: 'Amb', type: 'auth', phone: '101'),
-    Contacts(
-        id: '5',
-        avatar: null,
-        name: 'Saatwik DADA',
-        type: 'friend',
-        phone: '+12345678')
-  ];
+  Future<Uinfo> getinfo({bool refresh = false}) {
+    if (_info == null || refresh) {
+      return retrievemyinfo().then((value) => _info);
+    }
+
+    return Future.delayed(Duration(microseconds: 0)).then((value) => _info);
+  }
+
+  Future<Uinfo> retrievemyinfo() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      final Map<dynamic, dynamic> _data = value.data();
+      _info = Uinfo(
+          name: _data['name'],
+          address: null,
+          email: _data['email'],
+          friends: _data['friends'],
+          phone: null);
+
+      return _info;
+    }).catchError((e) => throw e);
+  }
+
+  void logout() {
+    FirebaseAuth.instance.signOut();
+    notifyListeners();
+  }
 }

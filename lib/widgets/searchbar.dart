@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatefulWidget {
+  final Function callback;
+  final TextEditingController _controller;
+  SearchBar(this.callback, this._controller);
   @override
   _SearchBarState createState() => _SearchBarState();
 }
@@ -8,17 +11,14 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar> {
   FocusNode _focusNode = new FocusNode();
 
-  TextEditingController _controller;
   bool _issearch = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _focusNode.addListener(_onfocusChange);
   }
 
   void _onfocusChange() {
-    print("HAS FOCUS == ${_focusNode.hasFocus}");
     setState(() {
       _focusNode.hasFocus ? _issearch = true : _issearch = false;
     });
@@ -38,6 +38,10 @@ class _SearchBarState extends State<SearchBar> {
               ? EdgeInsets.only(top: 28, left: 10, right: 10)
               : EdgeInsets.all(28),
           child: TextFormField(
+            controller: widget._controller,
+            onFieldSubmitted: (value) {
+              widget.callback(value, context);
+            },
             focusNode: _focusNode,
             decoration: InputDecoration(
                 icon: _issearch

@@ -1,4 +1,4 @@
-# help_me_app
+# helpmeapp
 
 A new Flutter project.
 

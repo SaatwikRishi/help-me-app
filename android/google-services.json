@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "476698299370",
+    "firebase_url": "https://sos-app-b41c0.firebaseio.com",
+    "project_id": "sos-app-b41c0",
+    "storage_bucket": "sos-app-b41c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476698299370:android:fe159512a69d42b6708093",
+        "android_client_info": {
+          "package_name": "com.example.helpmeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "476698299370-1nnumq4udu2ig89feurmupmtc4qoe4pr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQLKYJi7EX61HWFP3RitixxyeS0bRz16g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "476698299370-1nnumq4udu2ig89feurmupmtc4qoe4pr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
